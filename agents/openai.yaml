@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lab Report"
+  short_description: "Standard LaTeX laboratory report workflow"
+  default_prompt: "Use $lab-report to create or update this laboratory report."

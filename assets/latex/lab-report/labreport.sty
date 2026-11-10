@@ -1,0 +1,186 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{labreport}[2026/11/10 v1.0 Reusable laboratory report style]
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{newtxtext,newtxmath}
+\RequirePackage[scaled=0.93]{helvet}
+\RequirePackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm,headheight=22pt]{geometry}
+\RequirePackage{microtype}
+\RequirePackage{setspace}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage{amsmath}
+\RequirePackage{xcolor}
+\RequirePackage{caption}
+\RequirePackage{float}
+\RequirePackage{enumitem}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{listings}
+\RequirePackage[hidelinks]{hyperref}
+
+\definecolor{LabPrimary}{HTML}{1F4E79}
+\definecolor{LabRuleGray}{HTML}{CBD2D9}
+\definecolor{LabCodeGray}{HTML}{F5F6F8}
+\definecolor{LabPendingRed}{HTML}{B42318}
+\colorlet{RuleGray}{LabRuleGray}
+\colorlet{CodeGray}{LabCodeGray}
+\colorlet{PendingRed}{LabPendingRed}
+
+\graphicspath{{assets/}{../assets/}{figures/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.jpeg}
+
+\captionsetup{
+  font=small,
+  labelfont=bf,
+  justification=raggedright,
+  singlelinecheck=false,
+  skip=6pt
+}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{2em}
+\setstretch{1.18}
+\setlist[itemize]{leftmargin=1.5em,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.7em,itemsep=2pt,topsep=3pt}
+
+\titleformat{\section}{\large\bfseries\color{LabPrimary}}{\thesection}{0.65em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{13pt}{6pt}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{LabRuleGray}\leaders\hrule height \headrulewidth\hfill}}
+
+\lstdefinestyle{labcode}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  rulecolor=\color{LabRuleGray},
+  backgroundcolor=\color{LabCodeGray},
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=0.4em,
+  xrightmargin=0.4em,
+  aboveskip=8pt,
+  belowskip=8pt
+}
+\lstdefinestyle{ios}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  rulecolor=\color{LabRuleGray},
+  backgroundcolor=\color{LabCodeGray},
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=0.4em,
+  xrightmargin=0.4em,
+  aboveskip=8pt,
+  belowskip=8pt
+}
+
+\def\Lab@Course{Course Name}
+\def\Lab@CourseShort{Course Name}
+\def\Lab@ReportType{Experimental Report}
+\def\Lab@Number{1}
+\def\Lab@Title{Laboratory Report}
+\def\Lab@Student{Student Name}
+\def\Lab@StudentID{Student ID}
+\def\Lab@Major{Major}
+\def\Lab@College{College}
+\def\Lab@Date{\today}
+\def\Lab@Wordmark{university_wordmark.png}
+\def\Lab@Seal{university_logo.jpeg}
+\def\Lab@HeaderLeft{}
+\def\Lab@HeaderRight{}
+
+\newcommand{\LabCourse}[1]{\gdef\Lab@Course{#1}}
+\newcommand{\LabCourseShort}[1]{\gdef\Lab@CourseShort{#1}}
+\newcommand{\LabReportType}[1]{\gdef\Lab@ReportType{#1}}
+\newcommand{\LabNumber}[1]{\gdef\Lab@Number{#1}}
+\newcommand{\LabTitle}[1]{\gdef\Lab@Title{#1}}
+\newcommand{\LabStudent}[1]{\gdef\Lab@Student{#1}}
+\newcommand{\LabStudentID}[1]{\gdef\Lab@StudentID{#1}}
+\newcommand{\LabMajor}[1]{\gdef\Lab@Major{#1}}
+\newcommand{\LabCollege}[1]{\gdef\Lab@College{#1}}
+\newcommand{\LabDate}[1]{\gdef\Lab@Date{#1}}
+\newcommand{\LabWordmarkFile}[1]{\gdef\Lab@Wordmark{#1}}
+\newcommand{\LabSealFile}[1]{\gdef\Lab@Seal{#1}}
+\newcommand{\LabHeaderLeft}[1]{\gdef\Lab@HeaderLeft{#1}}
+\newcommand{\LabHeaderRight}[1]{\gdef\Lab@HeaderRight{#1}}
+
+\newcommand{\LabPending}[1]{\textcolor{LabPendingRed}{\textbf{[PENDING: #1]}}}
+
+\newcommand{\LabCoverField}[2]{%
+  \makebox[\textwidth][c]{%
+    \makebox[1.55in][r]{\bfseries #1}%
+    \hspace{0.30in}%
+    \underline{\makebox[4.45in][c]{#2}}%
+  }\par\vspace{0.24cm}%
+}
+
+\newcommand{\LabMakeCover}{%
+  \pagenumbering{Alph}%
+  \newgeometry{left=1.25in,right=1.25in,top=1in,bottom=1in}%
+  \begin{titlepage}
+    \centering
+    \vspace*{0.05cm}
+    \includegraphics[width=3.35in]{\Lab@Wordmark}
+    \vspace{0.45cm}
+
+    {\sffamily\fontsize{24}{29}\selectfont \Lab@ReportType\par}
+    \vspace{1.05cm}
+
+    \includegraphics[width=1.10in]{\Lab@Seal}
+    \vspace{2.65cm}
+
+    {\fontsize{18}{22}\selectfont
+    \LabCoverField{Course Name}{\Lab@Course}
+    \LabCoverField{Project Name}{\Lab@Title}
+    \LabCoverField{Student Name}{\Lab@Student}
+    \LabCoverField{Student ID}{\Lab@StudentID}
+    \LabCoverField{Major}{\Lab@Major}
+    \LabCoverField{College}{\Lab@College}}
+
+    \vfill
+    {\bfseries\sffamily\fontsize{18}{22}\selectfont Date: \Lab@Date\par}
+    \vspace{0.15cm}
+  \end{titlepage}
+}
+
+\newcommand{\LabBeginMain}{%
+  \restoregeometry
+  \pagenumbering{arabic}%
+  \pagestyle{fancy}%
+  \fancyhead[L]{\footnotesize\ifx\Lab@HeaderLeft\@empty\Lab@CourseShort\else\Lab@HeaderLeft\fi}%
+  \fancyhead[R]{\footnotesize\ifx\Lab@HeaderRight\@empty\Lab@ReportType\enspace\Lab@Number\else\Lab@HeaderRight\fi}%
+}
+
+\newcommand{\LabEvidenceFigure}[3][0.88]{%
+  \IfFileExists{figures/#2}{%
+    \includegraphics[width=#1\linewidth,height=0.33\textheight,keepaspectratio]{figures/#2}%
+  }{%
+    \fbox{\parbox[c][4.8cm][c]{0.88\linewidth}{%
+      \centering
+      Missing evidence\\[4pt]
+      \texttt{figures/#2}\\[4pt]
+      #3%
+    }}%
+  }%
+  \par\vspace{3pt}%
+}
+
+\AtBeginDocument{%
+  \hypersetup{pdftitle={\Lab@Course: \Lab@Title},pdfauthor={\Lab@Student}}%
+}

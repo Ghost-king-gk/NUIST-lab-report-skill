@@ -1,0 +1,61 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{labreport}
+
+\LabCourse{@@COURSE@@}
+\LabCourseShort{@@COURSESHORT@@}
+\LabReportType{@@REPORTTYPE@@}
+\LabNumber{@@LABNUMBER@@}
+\LabTitle{@@TITLE@@}
+\LabStudent{@@STUDENT@@}
+\LabStudentID{@@STUDENTID@@}
+\LabMajor{@@MAJOR@@}
+\LabCollege{@@COLLEGE@@}
+\LabDate{@@DATE@@}
+\LabWordmarkFile{assets/university_wordmark.png}
+\LabSealFile{assets/university_logo.jpeg}
+\LabHeaderLeft{@@HEADERLEFT@@}
+\LabHeaderRight{@@HEADERRIGHT@@}
+
+\begin{document}
+
+\LabMakeCover
+\LabBeginMain
+
+\begin{abstract}
+\noindent
+\LabPending{Write the abstract after the measured results and exclusions are known.}
+\end{abstract}
+
+\section{Introduction and Scope}
+
+State the experimental question, the system under test, and the claims the report will support.
+
+\section{Experimental Environment and Method}
+
+Describe the equipment, software, topology or apparatus, variables, controls, and measurement procedure. Include the addresses, ports, parameters, and configuration values needed to reproduce the run.
+
+\section{Results}
+
+Present the measured observations before interpretation. Use tables for multi-condition comparisons and figures for apparatus, topology, or captured evidence.
+
+\section{Discussion}
+
+Connect each result to the mechanism under test. Separate strong causal evidence, correlational observations, and mechanistic hypotheses.
+
+\section{Conclusion}
+
+\LabPending{State the accepted result, the measured boundary conditions, and the remaining unresolved question.}
+
+\appendix
+\section{Evidence Checklist}
+
+List the raw observations, configuration exports, screenshots, and generated data needed to reproduce each claim.
+
+\begin{thebibliography}{9}
+\footnotesize
+\bibitem{course}
+Course laboratory sheet or apparatus documentation.
+\end{thebibliography}
+
+\end{document}
+

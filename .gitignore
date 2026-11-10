@@ -1,0 +1,17 @@
+# Personal installation data
+personal-profile.json
+personal-*
+
+# Custom local logos copied by the installer
+assets/latex/lab-report/assets/custom-*
+
+# Generated reports and TeX build products
+build/
+tmp/
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
