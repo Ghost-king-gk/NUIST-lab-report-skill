@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 - 2026-11-10
+
+- Added cross-harness installation for Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy.
+- Added bilingual README with top navigation links.
+- Added a harness path matrix and installer dry-run mode.
+- Kept NUIST wordmark and seal in the shared cover.
+- Kept College and all other student fields as installer-provided local profile values.
+
 ## 1.0.1 - 2026-11-10
 
 - Keep the NUIST wordmark and seal in the shared skill cover.

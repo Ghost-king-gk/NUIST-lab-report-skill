@@ -1,6 +1,11 @@
 ---
 name: lab-report
 description: Create, standardize, compile, and visually verify course laboratory reports from a shared LaTeX template. Use for experimental reports, lab manuals, measurement reports, computational labs, and course practical reports that need a consistent cover, evidence handling, results tables, discussion, appendix, and PDF QA. Do not use for standalone papers, theses, or non-experimental documents.
+license: MIT
+metadata:
+  category: education
+  output: latex-pdf
+  harnesses: Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, WorkBuddy
 ---
 
 # Lab Report
@@ -52,11 +57,13 @@ Read [report-contract.md](references/report-contract.md) when deciding the repor
 
 The shared repository stores no personal data. The repository installer personalizes the skill for each user.
 
-The installer asks for student name, student ID, major, college, and optional wordmark and seal images. It writes those values only to:
+The installer asks which harness or harnesses to populate, then asks for student name, student ID, major, college, and optional wordmark and seal images. It writes those values only into each selected user-level skill target:
 
 ```text
-$HOME/.agents/skills/lab-report/personal-profile.json
+<installed-skill-root>/personal-profile.json
 ```
+
+See `HARNESSES.md` for the supported harness paths. `College` is a per-user cover field and is never hardcoded in the shared skill.
 
 `new-lab-report.ps1` loads this profile automatically. Explicit parameters such as `-Student`, `-StudentID`, `-WordmarkFile`, and `-SealFile` override the stored defaults for one report. If the profile is missing, do not invent personal data; instruct the user to run the repository installer or supply those parameters explicitly.
 
