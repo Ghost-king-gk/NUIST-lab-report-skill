@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 - 2026-11-10
+
+- Keep the NUIST wordmark and seal in the shared skill cover.
+- Restrict interactive installation to the student fields and optional branding overrides.
+
 ## 1.0.0 - 2026-11-10
 
 - Initial shareable `lab-report` skill.

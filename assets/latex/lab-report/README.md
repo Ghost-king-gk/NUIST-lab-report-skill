@@ -1,6 +1,6 @@
 # User-level laboratory report template
 
-This LaTeX template is part of the user-level `lab-report` skill. Reports load `labreport.sty` from this skill instead of copying a shared template into each project.
+This LaTeX template is part of the user-level `lab-report` skill. It includes the default NUIST wordmark and seal. Reports load `labreport.sty` from this skill instead of copying a shared template into each project.
 
 ## Report source
 
@@ -41,4 +41,4 @@ Use the generated `compile-report.ps1` in a report directory. It sets `TEXINPUTS
 \LabEvidenceFigure[0.88]{result.png}{Save the verified screenshot here.}
 ```
 
-Available public macros include `\LabPending`, `\LabCoverField`, `\LabWordmarkFile`, `\LabSealFile`, `\LabHeaderLeft`, and `\LabHeaderRight`.
+Available public macros include `\LabPending`, `\LabCoverField`, `\LabWordmarkFile`, `\LabSealFile`, `\LabHeaderLeft`, and `\LabHeaderRight`. The wordmark and seal macros can override the bundled NUIST branding for a different institution.

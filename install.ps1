@@ -32,10 +32,10 @@ if ([string]::IsNullOrWhiteSpace($StudentID)) { $StudentID = Read-Host 'Student 
 if ([string]::IsNullOrWhiteSpace($Major)) { $Major = Read-Host 'Major (optional)' }
 if ([string]::IsNullOrWhiteSpace($College)) { $College = Read-Host 'College or institution (optional)' }
 if ([string]::IsNullOrWhiteSpace($WordmarkFile)) {
-    $WordmarkFile = Read-Host 'University wordmark image path (optional; Enter uses placeholder)'
+    $WordmarkFile = Read-Host 'University wordmark image path (optional; Enter keeps bundled university branding)'
 }
 if ([string]::IsNullOrWhiteSpace($SealFile)) {
-    $SealFile = Read-Host 'University seal/logo image path (optional; Enter uses placeholder)'
+    $SealFile = Read-Host 'University seal/logo image path (optional; Enter keeps bundled university branding)'
 }
 if ([string]::IsNullOrWhiteSpace($StudentName) -or [string]::IsNullOrWhiteSpace($StudentID)) {
     throw 'Student name and student ID are required.'

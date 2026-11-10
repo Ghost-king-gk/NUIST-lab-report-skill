@@ -33,7 +33,7 @@ The LaTeX style, cover assets, and starter document live inside the user-level s
 `-- assets/
 ```
 
-Reports reference this user-level assets folder through the generated compiler. Do not create or copy a `templates/latex/lab-report` directory inside each project.
+The cover ships with the bundled NUIST wordmark and seal. Reports reference this user-level assets folder through the generated compiler. Do not create or copy a `templates/latex/lab-report` directory inside each project.
 
 Each report contains only its own content and evidence:
 

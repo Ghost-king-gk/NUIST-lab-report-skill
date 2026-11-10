@@ -1,6 +1,6 @@
 # Lab Report Skill for Codex
 
-A shareable Codex skill that provides a complete, reusable LaTeX system for course laboratory reports. The repository contains the actual `.sty` template, cover assets, report scaffolding, compilation scripts, and an evidence discipline rather than only prompt instructions.
+A shareable Codex skill that provides a complete, reusable LaTeX system for course laboratory reports, with the default NUIST wordmark and seal on the cover. The repository contains the actual `.sty` template, cover assets, report scaffolding, compilation scripts, and an evidence discipline rather than only prompt instructions.
 
 ![Laboratory report cover preview](docs/preview-cover.png)
 
@@ -9,7 +9,7 @@ A shareable Codex skill that provides a complete, reusable LaTeX system for cour
 - Standard laboratory report cover and typography
 - User-level LaTeX template; no per-project template copy
 - Interactive personal installation
-- Optional custom university wordmark and seal
+- Bundled NUIST wordmark and seal, with optional custom overrides
 - Evidence-first report structure
 - Tables for multi-condition result matrices
 - Code and terminal listings with consistent styling
@@ -91,9 +91,9 @@ Personal fields are written to:
 $HOME\.agents\skills\lab-report\personal-profile.json
 ```
 
-That file is excluded from Git. The shared repository contains only blank examples and neutral placeholder logos.
+That file is excluded from Git. The shared repository contains blank student fields and the institutional wordmark and seal, with no individual student data.
 
-If either logo path is left blank, the installer uses the bundled placeholder assets. If an image is supplied, it is copied into the installed user-level skill and referenced by the local profile.
+If either logo path is left blank, the installer keeps the bundled NUIST wordmark and seal. If an image is supplied, it is copied into the installed user-level skill and referenced by the local profile.
 
 ### Replace an existing installation
 
@@ -189,7 +189,7 @@ The shared repository intentionally contains:
 - no student ID;
 - no personal contact information;
 - no local absolute paths;
-- no university logo or seal.
+- the institutional wordmark and seal, without any student-specific data.
 
 Personal information is requested only during installation and written to the installing user's own `$HOME\.agents\skills\lab-report` directory. It is not uploaded or transmitted by these scripts.
 
