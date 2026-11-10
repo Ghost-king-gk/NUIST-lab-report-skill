@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 - 2026-11-10
+
+- Renamed the repository to `NUIST-lab-report-skill`.
+
 ## 1.1.0 - 2026-11-10
 
 - Added cross-harness installation for Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy.

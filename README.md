@@ -1,4 +1,4 @@
-# Lab Report Agent Skill
+# NUIST Lab Report Agent Skill
 
 <p align="center">
   <a href="#english">English</a> ·
@@ -91,8 +91,8 @@ pdfinfo -v
 Clone the repository and run the interactive installer:
 
 ```powershell
-git clone <YOUR_REPOSITORY_URL> codex-lab-report-skill
-Set-Location codex-lab-report-skill
+git clone <YOUR_REPOSITORY_URL> NUIST-lab-report-skill
+Set-Location NUIST-lab-report-skill
 .\install.ps1
 ```
 
@@ -219,7 +219,7 @@ The repository-local Git identity is a neutral placeholder. Global Git settings 
 ### Repository map
 
 ```text
-codex-lab-report-skill/
+NUIST-lab-report-skill/
 |-- SKILL.md
 |-- HARNESSES.md
 |-- install.ps1
@@ -317,8 +317,8 @@ pdfinfo -v
 克隆仓库后运行交互式安装器：
 
 ```powershell
-git clone <YOUR_REPOSITORY_URL> codex-lab-report-skill
-Set-Location codex-lab-report-skill
+git clone <YOUR_REPOSITORY_URL> NUIST-lab-report-skill
+Set-Location NUIST-lab-report-skill
 .\install.ps1
 ```
 
@@ -445,7 +445,7 @@ LaTeX 模板不会复制到项目目录。
 ### 目录结构
 
 ```text
-codex-lab-report-skill/
+NUIST-lab-report-skill/
 |-- SKILL.md
 |-- HARNESSES.md
 |-- install.ps1
@@ -477,4 +477,4 @@ MIT，详见 [LICENSE](LICENSE)。
 
 ---
 
-<p align="right"><a href="#lab-report-agent-skill">Back to top / 返回顶部</a></p>
+<p align="right"><a href="#nuist-lab-report-agent-skill">Back to top / 返回顶部</a></p>
