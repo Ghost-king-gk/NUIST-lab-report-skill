@@ -6,6 +6,7 @@ personal-*
 assets/latex/lab-report/assets/custom-*
 
 # Generated reports and TeX build products
+reports/
 build/
 tmp/
 *.aux
@@ -15,3 +16,6 @@ tmp/
 *.out
 *.synctex.gz
 *.toc
+
+# Local agent instructions
+AGENTS.md

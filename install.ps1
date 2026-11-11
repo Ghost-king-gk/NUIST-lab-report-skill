@@ -112,7 +112,7 @@ if (-not [string]::IsNullOrWhiteSpace($SealFile)) {
     $sealSource = [System.IO.Path]::GetFullPath($SealFile)
 }
 
-$exclude = @('.git', '.github', 'build', 'tmp', 'docs', 'personal-profile.json', 'profile.example.json', 'install.ps1')
+$exclude = @('.git', '.github', 'build', 'reports', 'tmp', 'docs', 'AGENTS.md', 'personal-profile.json', 'profile.example.json', 'install.ps1')
 
 function Copy-PersonalAsset([string]$source, [string]$prefix, [string]$fallback, [string]$assetDir) {
     if ([string]::IsNullOrWhiteSpace($source)) { return $fallback }

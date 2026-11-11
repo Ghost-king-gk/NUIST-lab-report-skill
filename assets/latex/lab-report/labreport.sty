@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{labreport}[2026/11/10 v1.0 Reusable laboratory report style]
+\ProvidesPackage{labreport}[2026/11/10 v1.2 Flexible laboratory report style]
 
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
@@ -167,18 +167,13 @@
   \fancyhead[R]{\footnotesize\ifx\Lab@HeaderRight\@empty\Lab@ReportType\enspace\Lab@Number\else\Lab@HeaderRight\fi}%
 }
 
-\newcommand{\LabEvidenceFigure}[3][0.88]{%
-  \IfFileExists{figures/#2}{%
-    \includegraphics[width=#1\linewidth,height=0.33\textheight,keepaspectratio]{figures/#2}%
-  }{%
-    \fbox{\parbox[c][4.8cm][c]{0.88\linewidth}{%
-      \centering
-      Missing evidence\\[4pt]
-      \texttt{figures/#2}\\[4pt]
-      #3%
-    }}%
-  }%
-  \par\vspace{3pt}%
+\newcommand{\LabFigure}[4][0.88]{%
+  \begin{figure}[htbp]
+    \centering
+    \includegraphics[width=#1\linewidth,height=0.42\textheight,keepaspectratio]{figures/#2}%
+    \caption{#3}%
+    \label{#4}%
+  \end{figure}
 }
 
 \AtBeginDocument{%

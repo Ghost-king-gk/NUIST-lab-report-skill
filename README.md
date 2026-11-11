@@ -3,11 +3,9 @@
 <p align="center">
   <a href="#english">English</a> ·
   <a href="#zh-cn">简体中文</a> ·
-  <a href="#harness-support">Harness support</a> ·
-  <a href="HARNESSES.md">Install paths</a> ·
+  <a href="HARNESSES.md">Harness paths</a> ·
   <a href="#installation">Install</a> ·
-  <a href="#privacy">Privacy</a> ·
-  <a href="#中文安装与个人资料">中文安装</a>
+  <a href="#privacy">Privacy</a>
 </p>
 
 <p align="center">
@@ -17,7 +15,9 @@
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
 
-A portable Agent Skill for producing consistent course laboratory reports with LaTeX, evidence-first structure, automated PDF checks, and per-user installation. It is designed for Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy.
+A portable Agent Skill for producing LaTeX laboratory reports with a polished NUIST cover, a flexible body outline, optional task-specific data charts, and room for user-supplied visual ideas. It supports Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy.
+
+面向高校实验报告的可移植 Agent Skill：提供统一的 NUIST LaTeX 封面、灵活的正文大纲、按任务生成的数据图，以及容纳用户自定义图片和排版想法的接口。
 
 ![Laboratory report cover preview](docs/preview-cover.png)
 
@@ -27,55 +27,57 @@ A portable Agent Skill for producing consistent course laboratory reports with L
 
 ## English
 
-### Why this repository
+### What this repository provides
 
-Most report templates stop at a copied `.tex` file. This repository packages the whole workflow:
-
-- a real `labreport.sty` and cover template;
-- a portable `SKILL.md` that follows the Agent Skills layout;
-- an installer that personalizes the skill for each user;
-- evidence placement rules and a report contract;
-- report scaffolding, compilation, pending-marker checks, missing-figure checks, layout checks, and per-page rendering.
-
-### What is included
+The skill keeps two elements stable: the LaTeX cover and the report structure. Course content, section emphasis, chart choices, and image composition remain editable. The template ships no course-specific project and imposes no fixed image count or visual sequence.
 
 | Component | Purpose |
 |---|---|
-| `SKILL.md` | Harness-neutral Agent Skill instructions |
-| `assets/latex/lab-report/labreport.sty` | Cover, headers, typography, tables, code listings, and evidence figures |
-| `assets/latex/lab-report/main-template.tex` | Starter report with a standard section structure |
-| `scripts/new-lab-report.ps1` | Creates a report directory and compiler wrapper |
-| `scripts/compile-report.ps1` | Compiles, validates, and renders the final PDF |
-| `references/report-contract.md` | Evidence hierarchy and report acceptance rules |
-| `install.ps1` | Selects a harness, asks for personal fields, and installs a personalized copy |
+| `SKILL.md` | Harness-neutral instructions for report generation |
+| `assets/latex/lab-report/labreport.sty` | Cover, headers, typography, tables, code listings, and figure wrapper |
+| `assets/latex/lab-report/main-template.tex` | Cover metadata and flexible body outline |
+| `scripts/new-lab-report.ps1` | Creates a report directory and local compiler wrapper |
+| `scripts/compile-report.ps1` | Compiles, validates, and renders the PDF |
+| `references/report-contract.md` | Default outline, optional figure policy, and final checks |
+| `install.ps1` | Installs a personalized copy for one or more harnesses |
+| `HARNESSES.md` | Lists user-level and project-level discovery paths |
+
+### Default report outline
+
+The starter document uses this sequence:
+
+1. Abstract
+2. Task and Objectives
+3. Background and Principles
+4. Method and Implementation
+5. Results and Data Analysis
+6. Discussion
+7. Conclusion
+8. Optional appendix and references
+
+Sections can be merged, removed, reordered, or replaced when the task or user requests a different argument structure.
+
+### Data figures and user images
+
+Figures are optional. If the supplied data support a useful comparison, trend, distribution, residual pattern, sensitivity result, or uncertainty display, the agent can generate a task-specific chart and place it under `figures/`.
+
+Users choose whether images appear, how many to include, and how they are composed. Custom diagrams, photographs, screenshots, rendered simulations, and plots are accepted through the default figure wrapper:
+
+```tex
+\LabFigure[0.85]{figure-file.png}{Caption text.}{fig:result}
+```
+
+Standard LaTeX `figure` and `\includegraphics` commands remain available for custom layouts.
 
 ### Harness support
 
-<a id="harness-support"></a>
-
-The shared unit is always a directory containing `SKILL.md` plus optional `scripts/`, `references/`, and `assets/`.
-
-| Harness | Native user-level directory |
-|---|---|
-| Codex / universal `.agents` | `~/.agents/skills/lab-report/` |
-| Claude Code | `~/.claude/skills/lab-report/` |
-| OpenCode | `~/.config/opencode/skills/lab-report/` |
-| Hermes | `~/.hermes/skills/lab-report/` |
-| Pi | `~/.pi/agent/skills/lab-report/` |
-| Oh My Pi | `~/.omp/agent/skills/lab-report/` |
-| DSH | `~/.dsh/skills/lab-report/` |
-| ZCode | `~/.zcode/skills/lab-report/` |
-| WorkBuddy | `~/.workbuddy/skills/lab-report/` |
-
-Project-level alternatives and source links are documented in [HARNESSES.md](HARNESSES.md).
+The skill targets Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy. Native installation paths and project-level alternatives are listed in [HARNESSES.md](HARNESSES.md).
 
 ### Requirements
 
 - A harness that supports Agent Skills or a compatible `SKILL.md` directory
 - TeX Live with `latexmk`, `pdflatex`, `pdftoppm`, and `pdfinfo`
-- PowerShell 7 or Windows PowerShell for the report scripts and installer
-
-Check the LaTeX tools:
+- PowerShell 7 or Windows PowerShell
 
 ```powershell
 latexmk -v
@@ -88,133 +90,67 @@ pdfinfo -v
 
 <a id="installation"></a>
 
-Clone the repository and run the interactive installer:
-
 ```powershell
 git clone <YOUR_REPOSITORY_URL> NUIST-lab-report-skill
 Set-Location NUIST-lab-report-skill
 .\install.ps1
 ```
 
-The installer first asks which harness or harnesses to install for, then asks for the per-user fields printed below the cover branding:
-
-1. Student name
-2. Student ID
-3. Major
-4. College
-5. Optional university wordmark image
-6. Optional university seal/logo image
-
-`College` is a per-user cover field. It is prompted during installation and is never hardcoded in the shared repository.
-
-Install one target explicitly:
+The installer asks for one or more harness targets, then stores the student name, student ID, major, college, and optional custom branding in the local skill directory.
 
 ```powershell
 .\install.ps1 -Harness codex
-.\install.ps1 -Harness claude-code
-.\install.ps1 -Harness opencode
-```
-
-Install for multiple targets:
-
-```powershell
-.\install.ps1 -Harness codex,claude-code,opencode,workbuddy
-```
-
-Install for every supported harness:
-
-```powershell
+.\install.ps1 -Harness codex,claude-code,opencode
 .\install.ps1 -Harness all
-```
-
-Preview the selected targets without writing anything:
-
-```powershell
 .\install.ps1 -Harness all -DryRun
 ```
 
-Install into an arbitrary compatible skill root:
-
-```powershell
-.\install.ps1 -TargetPath "D:\custom-agent\skills\lab-report"
-```
-
-Existing installations are protected by a timestamped backup when `-Force` is used.
+Use `-TargetPath` for another compatible skill root. Existing targets require `-Force`; the installer creates a timestamped backup before replacement.
 
 ### Create a report
 
-After installation, ask the selected harness to use `lab-report`, or invoke the installed scaffolding script directly:
-
 ```powershell
-& "<installed-skill-root>/scripts/new-lab-report.ps1" `
+.\scripts\new-lab-report.ps1 `
   -ProjectRoot (Get-Location).Path `
-  -Course "Computer Networks" `
-  -LabNumber "2" `
-  -Title "Virtual LAN and 802.1Q Trunking"
+  -Course "Course Name" `
+  -LabNumber "1" `
+  -Title "Report Title"
 ```
 
-The installer has already stored Student Name, Student ID, Major, College, and logo paths in the local `personal-profile.json`. Course, lab number, title, and date remain report-specific.
-
-The report scaffold contains only:
+The script loads the installed personal profile and creates:
 
 ```text
-reports/Lab2_Computer_Networks/
+reports/<lab-name>/
 |-- main.tex
 |-- figures/
-|-- evidence/
 |-- build/
 |-- compile-report.ps1
 |-- report.config.json
 `-- README.md
 ```
 
-No LaTeX template is copied into the project.
+`figures/` can remain empty. The shared LaTeX style stays in the user-level skill and is loaded through the generated compiler wrapper.
 
 ### Build and verify
 
-Scaffold preview:
-
 ```powershell
 .\compile-report.ps1 -AllowPending
-```
-
-Final build:
-
-```powershell
 .\compile-report.ps1
 ```
 
-The final check rejects:
-
-- unresolved `\LabPending{...}` markers;
-- missing `\LabEvidenceFigure` files;
-- Overfull or Underfull boxes;
-- LaTeX compilation failures.
-
-It then renders every PDF page to `build\pages` and reports the page count.
+`-AllowPending` supports scaffold previews. Final mode rejects unresolved `\LabPending{...}` markers, missing images referenced through `\LabFigure`, LaTeX errors, and Overfull or Underfull layout boxes. The compiler renders every PDF page to `build/pages/` and reports the page count.
 
 ### Privacy
 
 <a id="privacy"></a>
 
-The shared repository contains the institutional NUIST wordmark and seal, but no individual student data.
-
-Personal fields are written only to the installing user's local skill:
+The shared repository contains the institutional NUIST wordmark and seal. Student fields and custom branding are written only to the installing user's local skill:
 
 ```text
 <installed-skill-root>/personal-profile.json
 ```
 
-The shared repository contains:
-
-- no student name;
-- no student ID;
-- no personal email or Git identity;
-- no local absolute paths;
-- no personal profile file;
-- no custom institution logo copied by the installer.
-
-The repository-local Git identity is a neutral placeholder. Global Git settings are never changed by these scripts.
+The shared repository contains no student name, student ID, personal contact information, local absolute paths, or personal branding files.
 
 ### Repository map
 
@@ -255,53 +191,61 @@ MIT. See [LICENSE](LICENSE).
 
 ## 简体中文
 
-### 这个仓库解决什么问题
+### 仓库定位
 
-绝大多数实验报告模板只提供一个复制出来的 `.tex` 文件。这个仓库把完整流程一起打包：
+这个仓库面向高校实验报告，提供一套可移植的 LaTeX 报告工作流。固定部分是 NUIST 封面、封面字段和正文骨架；课程内容、章节侧重、数据图选择、图片数量和版式由具体任务与用户决定。
 
-- 实际的 `labreport.sty` 和封面模板；
-- 符合 Agent Skills 目录规范的 `SKILL.md`；
-- 安装时按用户写入个人资料的安装器；
-- 证据目录规范与报告验收契约；
-- 自动建报告、编译、待填项检查、缺图检查、版面检查和逐页渲染。
+仓库不内置课程项目案例，不规定图片数量，也不要求固定的全部视觉顺序。Agent 负责把用户提供的任务、数据、图片和排版想法组织成可编译的 PDF 报告。
 
-### 仓库内容
+### 核心组件
 
-| 组件 | 用途 |
+| 组件 | 作用 |
 |---|---|
-| `SKILL.md` | 与 Harness 无关的 Agent Skill 指令 |
-| `assets/latex/lab-report/labreport.sty` | 封面、页眉、字体、表格、代码块和证据图 |
-| `assets/latex/lab-report/main-template.tex` | 标准章节结构的报告起始文件 |
-| `scripts/new-lab-report.ps1` | 创建报告目录和本地编译入口 |
-| `scripts/compile-report.ps1` | 编译、检查并渲染最终 PDF |
-| `references/report-contract.md` | 证据层级和报告验收规则 |
-| `install.ps1` | 选择 Harness、询问个人字段并安装个性化副本 |
+| `SKILL.md` | 与 harness 无关的报告生成指令 |
+| `assets/latex/lab-report/labreport.sty` | 封面、页眉、字体、表格、代码块和图片包装宏 |
+| `assets/latex/lab-report/main-template.tex` | 封面字段和可调整的正文大纲 |
+| `scripts/new-lab-report.ps1` | 创建报告目录与本地编译入口 |
+| `scripts/compile-report.ps1` | 编译、检查并逐页渲染 PDF |
+| `references/report-contract.md` | 默认大纲、可选图片策略和最终检查 |
+| `install.ps1` | 为一个或多个 harness 安装个性化副本 |
+| `HARNESSES.md` | 列出各 harness 的用户级与项目级路径 |
+
+### 默认正文大纲
+
+起始模板采用以下顺序：
+
+1. 摘要
+2. 任务与目标
+3. 背景与原理
+4. 方法与实现
+5. 结果与数据分析
+6. 讨论
+7. 结论
+8. 可选附录与参考文献
+
+具体任务允许合并、删减、重排或替换章节。用户给出的正文大纲优先于默认结构。
+
+### 数据图与用户自定义图片
+
+图片不是必需项。用户提供数据后，Agent 可以根据数据是否存在趋势、组间差异、分布特征、残差结构、敏感性或不确定性，决定是否生成任务相关的数据图，并把文件放入 `figures/`。
+
+图片数量、类型、构图和插入位置由用户决定。示意图、照片、截图、仿真渲染图和其他自绘图片都可以通过默认图片宏加入：
+
+```tex
+\LabFigure[0.85]{figure-file.png}{图片说明}{fig:result}
+```
+
+需要自定义排版时，可以直接使用标准 LaTeX `figure` 环境和 `\includegraphics`。技能会保留用户自己的图片组织和版式意图。
 
 ### 支持的 Harness
 
-共享核心始终是一个包含 `SKILL.md` 的目录，并可携带 `scripts/`、`references/` 和 `assets/`。
-
-| Harness | 原生用户级目录 |
-|---|---|
-| Codex / 通用 `.agents` | `~/.agents/skills/lab-report/` |
-| Claude Code | `~/.claude/skills/lab-report/` |
-| OpenCode | `~/.config/opencode/skills/lab-report/` |
-| Hermes | `~/.hermes/skills/lab-report/` |
-| Pi | `~/.pi/agent/skills/lab-report/` |
-| Oh My Pi | `~/.omp/agent/skills/lab-report/` |
-| DSH | `~/.dsh/skills/lab-report/` |
-| ZCode | `~/.zcode/skills/lab-report/` |
-| WorkBuddy | `~/.workbuddy/skills/lab-report/` |
-
-各 Harness 的项目级目录和来源链接见 [HARNESSES.md](HARNESSES.md)。
+技能支持 Codex、Claude Code、OpenCode、Hermes、Pi、Oh My Pi、DSH、ZCode 和 WorkBuddy。各 harness 的原生安装路径与项目级替代路径见 [HARNESSES.md](HARNESSES.md)。
 
 ### 环境要求
 
-- 支持 Agent Skills 或兼容 `SKILL.md` 目录的 Harness
-- 已安装 TeX Live，并包含 `latexmk`、`pdflatex`、`pdftoppm` 和 `pdfinfo`
+- 支持 Agent Skills 或兼容 `SKILL.md` 目录的 harness
+- 已安装 TeX Live，并包含 `latexmk`、`pdflatex`、`pdftoppm`、`pdfinfo`
 - PowerShell 7 或 Windows PowerShell
-
-检查 LaTeX 工具：
 
 ```powershell
 latexmk -v
@@ -310,11 +254,7 @@ pdftoppm -v
 pdfinfo -v
 ```
 
-### 安装与个人资料
-
-<a id="中文安装与个人资料"></a>
-
-克隆仓库后运行交互式安装器：
+### 安装
 
 ```powershell
 git clone <YOUR_REPOSITORY_URL> NUIST-lab-report-skill
@@ -322,125 +262,61 @@ Set-Location NUIST-lab-report-skill
 .\install.ps1
 ```
 
-安装器先询问要安装到哪个或哪些 Harness，再询问封面下方需要个人化的字段：
-
-1. Student name
-2. Student ID
-3. Major
-4. College
-5. 可选 university wordmark 图片
-6. 可选 university seal/logo 图片
-
-`College` 是每个用户不同的学院字段，只在安装时询问，共享仓库不会硬编码任何学院名称。
-
-也可以直接指定单个 Harness：
+安装器会询问目标 harness，并把姓名、学号、专业、学院和可选的自定义校徽写入本机 skill 目录。
 
 ```powershell
 .\install.ps1 -Harness codex
-.\install.ps1 -Harness claude-code
-.\install.ps1 -Harness opencode
-```
-
-安装到多个 Harness：
-
-```powershell
-.\install.ps1 -Harness codex,claude-code,opencode,workbuddy
-```
-
-安装到全部支持的 Harness：
-
-```powershell
+.\install.ps1 -Harness codex,claude-code,opencode
 .\install.ps1 -Harness all
-```
-
-只查看目标目录，不写入任何文件：
-
-```powershell
 .\install.ps1 -Harness all -DryRun
 ```
 
-安装到任意兼容目录：
+使用 `-TargetPath` 可以安装到其它兼容目录。目标已存在时必须配合 `-Force`，安装器会先创建带时间戳的备份。
+
+### 创建报告
 
 ```powershell
-.\install.ps1 -TargetPath "D:\custom-agent\skills\lab-report"
-```
-
-如果目标已存在，必须使用 `-Force`；旧版本会先被移动到带时间戳的备份目录。
-
-### 创建实验报告
-
-安装后在选定 Harness 中调用 `lab-report`，或直接运行安装后的脚手架：
-
-```powershell
-& "<installed-skill-root>/scripts/new-lab-report.ps1" `
+.\scripts\new-lab-report.ps1 `
   -ProjectRoot (Get-Location).Path `
-  -Course "Computer Networks" `
-  -LabNumber "2" `
-  -Title "Virtual LAN and 802.1Q Trunking"
+  -Course "课程名称" `
+  -LabNumber "1" `
+  -Title "报告题目"
 ```
 
-个人姓名、学号、专业、学院和 Logo 路径会从本地 `personal-profile.json` 自动加载。课程、实验编号、报告题目和日期仍然是每份报告单独填写。
-
-生成的报告目录只包含：
+脚本会读取本机个人资料并生成：
 
 ```text
-reports/Lab2_Computer_Networks/
+reports/<报告目录>/
 |-- main.tex
 |-- figures/
-|-- evidence/
 |-- build/
 |-- compile-report.ps1
 |-- report.config.json
 `-- README.md
 ```
 
-LaTeX 模板不会复制到项目目录。
+`figures/` 可以为空。共享 LaTeX 样式保留在用户级 skill 中，由生成的编译入口加载，不复制到报告项目。
 
 ### 编译与验收
 
-脚手架预览：
-
 ```powershell
 .\compile-report.ps1 -AllowPending
-```
-
-正式编译：
-
-```powershell
 .\compile-report.ps1
 ```
 
-正式模式会拒绝：
+`-AllowPending` 用于生成未完成的脚手架预览。正式模式会拒绝残留的 `\LabPending{...}`、通过 `\LabFigure` 引用但不存在的图片、LaTeX 编译错误，以及 Overfull 或 Underfull 版面。编译完成后，每一页都会渲染到 `build/pages/`，并输出 PDF 页数。
 
-- 未替换的 `\LabPending{...}`；
-- 缺失的 `LabEvidenceFigure` 文件；
-- Overfull 或 Underfull 版面；
-- LaTeX 编译错误。
+### 隐私与本地资料
 
-编译完成后会把每一页渲染到 `build\pages`，并报告 PDF 页数。
+<a id="zh-privacy"></a>
 
-### 隐私与本地个人资料
-
-<a id="隐私与本地个人资料"></a>
-
-共享仓库保留 NUIST 校名艺术字和校徽，但不包含任何学生个人资料。
-
-个人字段只写入安装者本机的 Skill 目录：
+共享仓库保留 NUIST 校名艺术字和校徽。学生字段与自定义校徽只写入安装者本机的 skill 目录：
 
 ```text
 <installed-skill-root>/personal-profile.json
 ```
 
-共享仓库不包含：
-
-- 学生姓名；
-- 学号；
-- 个人邮箱或 Git 身份；
-- 本机绝对路径；
-- `personal-profile.json`；
-- 安装时复制的自定义校徽。
-
-仓库的本地 Git 提交身份是中性占位身份，安装脚本不会修改用户的全局 Git 配置。
+共享仓库不包含学生姓名、学号、个人联系方式、本机绝对路径或个人校徽文件。
 
 ### 目录结构
 
@@ -474,7 +350,3 @@ NUIST-lab-report-skill/
 ### 许可证
 
 MIT，详见 [LICENSE](LICENSE)。
-
----
-
-<p align="right"><a href="#nuist-lab-report-agent-skill">Back to top / 返回顶部</a></p>

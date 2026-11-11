@@ -41,11 +41,13 @@ if (-not $AllowPending -and $pending) {
     exit 1
 }
 
-$evidenceMatches = Select-String -LiteralPath $mainPath -Pattern '\\LabEvidenceFigure(?:\[[^\]]*\])?\{([^}]+)\}' -AllMatches
-if ($evidenceMatches) {
+$mainText = Get-Content -LiteralPath $mainPath -Raw -Encoding utf8
+$uncommentedMain = (($mainText -split "`r?`n") | ForEach-Object { $_ -replace '(?<!\\)%.*$', '' }) -join "`n"
+$figureMatches = [regex]::Matches($uncommentedMain, '\\LabFigure(?:\[[^\]]*\])?\{([^}]+)\}|\\includegraphics(?:\[[^\]]*\])?\{figures/([^}]+)\}')
+if ($figureMatches.Count -gt 0) {
     $missing = @()
-    foreach ($match in $evidenceMatches.Matches) {
-        $relative = $match.Groups[1].Value
+    foreach ($match in $figureMatches) {
+        $relative = if ($match.Groups[1].Success) { $match.Groups[1].Value } else { $match.Groups[2].Value }
         $path = Join-Path $reportRoot (Join-Path 'figures' $relative)
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
             $missing += "figures/$relative"

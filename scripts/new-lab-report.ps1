@@ -73,7 +73,7 @@ $reportRoot = Join-Path $projectRoot 'reports'
 $reportDir = Join-Path $reportRoot $DirectoryName
 if (Test-Path -LiteralPath $reportDir) { throw "Report directory already exists: $reportDir" }
 
-New-Item -ItemType Directory -Force -Path $reportRoot, $reportDir, (Join-Path $reportDir 'figures'), (Join-Path $reportDir 'evidence'), (Join-Path $reportDir 'build') | Out-Null
+New-Item -ItemType Directory -Force -Path $reportRoot, $reportDir, (Join-Path $reportDir 'figures'), (Join-Path $reportDir 'build') | Out-Null
 
 $templateMain = Get-Content -LiteralPath (Join-Path $templateRoot 'main-template.tex') -Raw -Encoding utf8
 $main = $templateMain
@@ -138,10 +138,9 @@ The LaTeX style and cover assets are loaded from the user-level `lab-report` ski
 
 ## Structure
 
-- `main.tex`: report source
-- `figures/`: curated images inserted into the PDF
-- `evidence/`: raw observations, screenshots, logs, and data exports
-- `build/`: generated LaTeX and page renders
+- `main.tex`: report source and body outline
+- `figures/`: optional data charts and user-supplied images
+- `build/`: generated LaTeX files and page renders
 
 ## Build
 
@@ -150,18 +149,10 @@ The LaTeX style and cover assets are loaded from the user-level `lab-report` ski
 .\compile-report.ps1
 ```
 
-Final mode rejects `[PENDING:` markers and missing `LabEvidenceFigure` files.
-"@
-
-Set-Content -LiteralPath (Join-Path $reportDir 'evidence\README.md') -Encoding utf8 -Value @"
-# Raw evidence
-
-Store observations and configuration exports here before selecting figures for `main.tex`.
-
-Each item should identify the experiment, device or system, condition, command or measurement, timestamp when relevant, and the claim it supports.
+Final mode rejects `[PENDING:` markers and missing images referenced through `LabFigure`.
 "@
 
 Write-Host "Report scaffold: $reportDir" -ForegroundColor Green
 Write-Host "Template source: $templateRoot"
 Write-Host "Personal profile: $profilePath"
-Write-Host "Next: edit main.tex, add evidence, then run .\compile-report.ps1 -AllowPending"
+Write-Host "Next: edit main.tex, add optional figures, then run .\compile-report.ps1 -AllowPending"

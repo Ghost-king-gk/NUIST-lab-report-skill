@@ -1,47 +1,50 @@
-# Laboratory report contract
+# Report outline and figure policy
 
-## Evidence hierarchy
+## Stable core
 
-Prefer raw observations over summaries:
+The shared template provides two fixed elements: the LaTeX cover and a flexible body outline. Course-specific sections, project-specific content, image requirements, and a prescribed content sequence are not part of the template.
 
-1. Primary measurements, logs, screenshots, traces, datasets, and configuration exports.
-2. Method and apparatus records that establish the measurement conditions.
-3. Author-written summaries and discussion.
-4. Generic background material.
+## Default outline
 
-Do not fabricate a missing observation. Leave a visible `\LabPending{...}` marker or state the unresolved variable.
+Adapt the order and depth to the task:
 
-## Standard structure
+1. Abstract: task, method, principal result, conclusion.
+2. Task and Objectives: question, requested deliverables, scope.
+3. Background and Principles: concepts and formulas needed to understand the method.
+4. Method and Implementation: apparatus, software, procedure, parameters, controls, and reproducibility details.
+5. Results and Data Analysis: measurements or generated results, followed by their interpretation.
+6. Discussion: mechanisms, boundary conditions, contradictions, and limitations.
+7. Conclusion: accepted result, uncertainty, and remaining question.
+8. Appendix and references: optional derivations, extended tables, code listings, and sources.
 
-Adapt section names to the discipline while preserving this argument chain:
+Users may add, remove, merge, or reorder sections. A user-provided outline takes precedence over this default.
 
-1. Abstract: question, setup, measured result, conclusion.
-2. Introduction and scope: question, system boundary, claims under test.
-3. Environment and method: equipment, software, variables, controls, procedure, reproducibility details.
-4. Results: measurements before interpretation.
-5. Discussion: mechanism, boundary conditions, contradictions, limitations.
-6. Conclusion: accepted result, uncertainty, next discriminating test.
-7. Appendix: command summaries, evidence manifests, derivations, or extended tables.
+## Data figures
 
-## Evidence placement
+Create a visualization when the available data make a relationship clearer than prose or a table. Useful targets include trends, comparisons, distributions, residuals, sensitivity, uncertainty, and parameter boundaries.
 
-```text
-evidence/   raw captures and machine-readable exports
-figures/    curated, captioned images inserted into main.tex
-build/      generated PDFs, logs, auxiliaries, and page renders
+Use the user's data and preserve its scale, units, filtering, and provenance. Do not invent values, smooth over missing data, or imply a measurement that was not supplied. A table is preferable when exact values matter more than a visual pattern.
+
+Figures are optional. The template does not require a fixed number, type, or sequence of images.
+
+## User-supplied visuals
+
+Accept custom diagrams, photographs, screenshots, rendered simulations, plots, and other image assets. Users decide which images to include, how many to use, and where they belong. Preserve their intended composition when it remains readable in the final PDF.
+
+Use `\LabFigure` for the standard figure wrapper:
+
+```tex
+\LabFigure[0.85]{figure-file.png}{Caption text.}{fig:label}
 ```
 
-Keep filenames stable and descriptive. Figure captions should state what was measured, under which condition, and what claim the visual supports.
+For a custom layout, use a standard `figure` environment and `\includegraphics` directly. Both approaches are supported.
 
-## Results tables
+## Final checks
 
-Use a table when several conditions share the same variables. Include the measured value, condition, and comparison or boundary. For binary network tests, record sent, received, and loss rate rather than only “success” or “failure.”
-
-## Final acceptance
-
-- The PDF compiles without errors.
+- The cover metadata matches the user's profile and report.
+- The body follows the task requirements and any user-defined outline.
 - No unintended `[PENDING:` markers remain.
-- Every referenced evidence image exists.
+- Every referenced image exists.
 - No overfull or underfull boxes appear in the log.
-- Every page is visually inspected after rendering to PNG.
-- Claims match the actual evidence and distinguish causal evidence from mechanistic hypothesis.
+- Every rendered page is visually inspected.
+- Reported results and conclusions match the supplied data.

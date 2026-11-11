@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 - 2026-11-10
+
+- Refocused the skill on the shared LaTeX cover and a flexible body outline.
+- Removed the fixed source-capture directory and capture-first report workflow.
+- Replaced the legacy figure macro with optional `LabFigure` support for generated charts and user-supplied images.
+- Updated scaffolding, compiler validation, bilingual documentation, and the default report outline.
+
 ## 1.1.1 - 2026-11-10
 
 - Renamed the repository to `NUIST-lab-report-skill`.
@@ -22,5 +29,5 @@
 - Initial shareable `lab-report` skill.
 - User-level LaTeX style and cover template.
 - Personalized installation through `install.ps1`.
-- Evidence-first report contract and project scaffolding.
+- Initial report contract and project scaffolding.
 - Compilation, pending-marker checks, missing-figure checks, layout checks, and page rendering.

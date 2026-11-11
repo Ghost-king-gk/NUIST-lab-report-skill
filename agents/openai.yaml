@@ -1,4 +1,4 @@
 interface:
   display_name: "Lab Report"
-  short_description: "Standard LaTeX laboratory report workflow"
-  default_prompt: "Use $lab-report to create or update this laboratory report."
+  short_description: "Flexible LaTeX report cover, outline, and optional figures"
+  default_prompt: "Use $lab-report to create or update this laboratory report with the shared cover and a task-specific outline."
