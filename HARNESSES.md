@@ -10,6 +10,8 @@ lab-report/
 `-- assets/
 ```
 
+The installed skill contains the shared DOCX builder, native PDF wrapper, cover assets, and report references. Generated report files stay in the consuming project.
+
 Every harness listed below consumes the same `SKILL.md` plus its neighboring resources. Discovery roots and invocation commands differ, so the installer writes the same personalized skill to each selected harness's native user-level directory.
 
 ## Path matrix
@@ -54,6 +56,44 @@ Install to an arbitrary compatible skill directory:
 
 ```powershell
 .\install.ps1 -TargetPath "D:\custom-agent\skills\lab-report"
+```
+
+## Linux and WSL installation
+
+On Linux or inside WSL, use the Bash installer. It resolves the same user-level paths through `$HOME` and accepts the same harness keys:
+
+```bash
+bash install.sh --harness codex
+bash install.sh --harness codex,claude-code,opencode
+bash install.sh --harness all --dry-run
+bash install.sh --harness all
+```
+
+Interactive installation uses the same numbered harness list:
+
+```bash
+bash install.sh
+```
+
+Use `--force` to back up and replace existing installations:
+
+```bash
+bash install.sh --harness codex --force
+```
+
+Install to an arbitrary compatible skill directory:
+
+```bash
+bash install.sh --target-path "$HOME/.local/share/agent-skills/lab-report"
+```
+
+WSL converts Windows drive paths through `wslpath` when a drive-letter path is passed to `--target-path` or an image option. The project itself can stay under `/mnt/<drive>/...`, while the installed skill normally belongs in the Linux `$HOME`.
+
+After installation, the Bash report entry points are:
+
+```bash
+bash "$HOME/.agents/skills/lab-report/scripts/new-lab-report.sh" --help
+bash "$HOME/.agents/skills/lab-report/scripts/compile-report.sh" --help
 ```
 
 ## Source references

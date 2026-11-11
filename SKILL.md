@@ -1,112 +1,143 @@
 ---
 name: lab-report
-description: Create and visually verify flexible course laboratory reports from a shared LaTeX cover and body outline. Use for lab reports that need consistent cover metadata, an adaptable structure, optional task-specific data visualizations, user-supplied images, and final PDF layout checks. Do not use for standalone papers, theses, or documents without a report cover and structured body.
+description: Create and build flexible NUIST laboratory reports as editable DOCX and optional PDF from one Markdown source, with a fixed university cover, structured experiment body, results tables, optional figures, and final layout validation. Use for course lab reports. Do not use for standalone papers, theses, or documents without a laboratory-report cover and experiment structure.
 license: MIT
 metadata:
   category: education
-  output: latex-pdf
+  output: docx,pdf
   harnesses: Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, WorkBuddy
 ---
 
 # Lab Report
 
-Use a stable LaTeX cover and a flexible body scaffold. The skill handles presentation and structure; the user controls the report argument, section emphasis, and visual assets.
+Create a polished laboratory report without putting report-generator scripts or build intermediates into the consuming project. One Markdown source drives both DOCX and PDF.
+
+## Deliverable contract
+
+- Default to an editable `.docx`.
+- Produce PDF only when requested or when the submission requires it.
+- Keep one content source: `report.md`. DOCX and PDF must not maintain separate report text.
+- Keep the project clean. The reusable builder, cover assets, and validation helpers stay inside this skill.
+- The final project contains experiment source code, its README, raw results, and final report files. It does not contain report-builder scripts, extracted slides, temporary renderers, page PNGs, caches, or failed build artifacts.
+
+## Format decision
+
+Keep DOCX and PDF in this single skill. They share the same cover, metadata, Markdown body, tables, figures, numbering, and evidence rules. Split skills would duplicate those invariants and allow the Word and PDF versions to drift.
+
+Use:
+
+- `docx` for the editable submission and layout-authoritative artifact;
+- `pdf` for review, printing, or submission when a fixed-layout file is required;
+- `docx,pdf` when both are required.
+
+## Authority order
+
+This skill controls the laboratory-report cover, A4 geometry, heading hierarchy, table treatment, caption style, and report structure. If the `documents` skill is also available, use it only for generic DOCX rendering, OOXML validation, accessibility checks, or PDF conversion. Do not apply the generic document skill's Letter page size, alternate cover, or style preset over this skill.
 
 ## Inputs
 
 Identify:
 
-- course, lab number, report title, and language;
-- task statement, required questions, and desired sections;
-- available data, tables, observations, or results that may justify a chart;
-- optional user-provided images, diagrams, photographs, screenshots, or layout references;
-- any user-defined outline or visual direction.
+- course, course short name, lab number, report title, report type, and language;
+- task statement, required questions, and any required deliverable format;
+- experiment source, measured results, tables, traces, or logs;
+- optional user-provided diagrams, photographs, screenshots, or layout references;
+- any user-defined section order or emphasis.
 
-Student name, ID, major, college, and optional institution images are normally loaded from the user's `personal-profile.json` after installation.
+Cover identity is normally loaded from `personal-profile.json`. Do not invent student details, measurements, sources, or conclusions.
 
-Presentation details that are missing may use sensible defaults. Do not invent data, measurements, sources, or conclusions.
+## Report workspace
 
-## Template location
-
-The LaTeX style, cover assets, and starter document live inside the user-level skill:
-
-```text
-<skill-root>/assets/latex/lab-report/
-|-- labreport.sty
-|-- main-template.tex
-|-- README.md
-`-- assets/
-```
-
-The cover ships with the bundled NUIST wordmark and seal. Reports reference this user-level assets folder through the generated compiler. Do not create or copy a `templates/latex/lab-report` directory inside each project.
-
-Each report contains its source, optional figures, and build output:
-
-```text
-reports/<Lab_Name>/
-|-- main.tex
-|-- figures/
-|-- build/
-`-- compile-report.ps1
-```
-
-The `figures/` directory may stay empty. Read [report-contract.md](references/report-contract.md) for the default outline, figure policy, and final checks.
-
-## Personal profile
-
-The shared repository stores no personal data. The repository installer personalizes the skill for each user.
-
-The installer asks which harness or harnesses to populate, then asks for student name, student ID, major, college, and optional wordmark and seal images. It writes those values only into each selected user-level skill target:
-
-```text
-<installed-skill-root>/personal-profile.json
-```
-
-See `HARNESSES.md` for the supported harness paths. `College` is a per-user cover field and is never hardcoded in the shared skill.
-
-`new-lab-report.ps1` loads this profile automatically. Explicit parameters such as `-Student`, `-StudentID`, `-WordmarkFile`, and `-SealFile` override the stored defaults for one report. If the profile is missing, do not invent personal data; instruct the user to run the repository installer or supply those parameters explicitly.
-
-## Scaffold
-
-For a new report directory, run:
+Create a report with:
 
 ```powershell
-.\scripts\new-lab-report.ps1 `
-  -ProjectRoot <project-root> `
-  -Course "<course>" `
-  -LabNumber "<lab number>" `
-  -Title "<report title>"
+python <skill-root>/scripts/report_tool.py new `
+  --project-root <project-root> `
+  --course "<course>" `
+  --lab-number "<lab-number>" `
+  --title "<report-title>" `
+  --format docx
 ```
 
-The script loads the installed personal profile, generates the report from the user-level template assets, and writes a small local compiler wrapper. It refuses to overwrite an existing report directory and does not copy the LaTeX style into the project.
+On Linux or WSL, use the Bash wrapper or `python3` directly:
+
+```bash
+bash <skill-root>/scripts/new-lab-report.sh \
+  --project-root <project-root> \
+  --course "<course>" \
+  --lab-number "<lab-number>" \
+  --title "<report-title>" \
+  --format docx
+```
+
+The scaffold contains only:
+
+```text
+reports/<report>/
+|-- README.md
+|-- report.json
+|-- report.md
+|-- figures/
+`-- output/
+```
+
+No `main.tex`, report builder, compiler wrapper, temporary directory, or figure generator is added to the consuming project. The shared tool generates optional LaTeX only inside a disposable build location.
+
+Read [report-source.md](references/report-source.md) before editing `report.md`. Read [report-contract.md](references/report-contract.md) when deciding the scientific structure, evidence placement, or figure policy.
 
 ## Workflow
 
-1. Read the task and choose an outline. Start from the template and add, remove, merge, or reorder sections when the task or user requests it.
-2. Use tables for precise comparisons and figures for relationships that are easier to inspect visually.
-3. When data supports a chart, create a task-specific visualization and place the resulting file under `figures/`.
-4. Accept user-provided images and layout ideas directly. Use `\LabFigure` when its default float wrapper helps, or standard LaTeX figure and `\includegraphics` commands for custom layouts.
-5. Replace every `\LabPending{...}` with finished prose or a deliberate unresolved statement.
-6. Compile and inspect layout:
+1. Inspect the task, source data, slides, code, and results. Separate observed facts from interpretation.
+2. Keep only useful result files in `results/` or the project's existing result location. Do not retain extracted source archives or renderer caches.
+3. Create or edit `report.json` for cover metadata and `report.md` for body content.
+4. Put optional report images under `figures/` using stable relative paths. Keep generated analysis data and code in their normal project locations.
+5. Replace every `[PENDING: ...]` marker before final delivery.
+6. Build the requested outputs:
 
 ```powershell
-.\compile-report.ps1 -AllowPending   # scaffold preview
-.\compile-report.ps1                 # final check
+python <skill-root>/scripts/report_tool.py build `
+  --report-dir <report-dir> `
+  --formats docx,pdf
 ```
 
-Final mode rejects `[PENDING:` markers, missing `\LabFigure` files, overfull or underfull boxes, and LaTeX errors. It renders page PNGs under `build/pages` and reports the PDF page count.
+Linux and WSL equivalent:
+
+```bash
+bash <skill-root>/scripts/compile-report.sh \
+  --report-dir <report-dir> \
+  --formats docx,pdf
+```
+
+Use `--allow-pending` only for a scaffold preview.
+
+7. Inspect the final artifact. For DOCX, read [docx-format.md](references/docx-format.md). For PDF, read [pdf-export.md](references/pdf-export.md).
+8. Render every final page to images outside the report project, inspect each page, and fix clipping, overlap, broken tables, orphan headings, missing glyphs, and unintended blank pages before delivery.
+
+## Shell entry points
+
+- Windows: `install.ps1`, `scripts/new-lab-report.ps1`, `scripts/compile-report.ps1`.
+- Linux and WSL: `install.sh`, `scripts/new-lab-report.sh`, `scripts/compile-report.sh`.
+- The Python entry points remain the canonical implementation: `python` on Windows and `python3` on Linux/WSL.
+
+## DOCX and PDF build paths
+
+- DOCX is generated directly from `report.md` with the shared NUIST cover and A4 report styles.
+- PDF uses the same `report.md`. With `--pdf-backend auto`, the tool exports DOCX through LibreOffice when available; otherwise it builds a native LaTeX PDF through Pandoc and `latexmk`.
+- Native LaTeX retains the existing `labreport.sty` cover. The generated TeX source and auxiliary files are temporary and removed after the build.
+
+Use `--pdf-backend office` when the PDF must match the DOCX exactly. Use `--pdf-backend latex` when TeX sources are required or LibreOffice is unavailable.
 
 ## Figure policy
 
-Figures are optional. Do not require a fixed figure count or a prescribed image sequence. Generate a data chart only when the available data and the report question make that chart informative. Preserve user-supplied images, captions, ordering, and placement unless the user asks for editorial guidance.
+Figures are optional. Generate a chart only when data and the report question make a relationship easier to inspect than prose or a table. Preserve user-supplied images, captions, ordering, and intended composition. Every figure needs a specific caption and alternative text in DOCX.
 
 ## Writing discipline
 
-- Separate reported data from interpretation.
-- Use exact units, sample counts, effect sizes, tolerances, and boundary conditions when available.
-- Use prose for the argument; reserve tables for multi-condition comparisons and lists for strict procedures.
-- Give every figure a caption that identifies the data or concept shown and its relevance.
-- State conflicting results and measurement limits directly.
-- Do not describe a simulation as hardware timing or performance data.
-- Do not claim success from configuration state alone when a behavioral test is required.
+- Separate measured results from interpretation.
+- Use exact units, sample sizes, tolerances, effect sizes, and operating boundaries.
+- Use tables for repeated comparisons and prose for mechanism and interpretation.
+- State conflicting evidence directly and identify the variable that explains the disagreement.
+- Do not describe simulated timing as hardware performance.
+- Do not claim success from configuration alone when a behavioral test is required.
+- Do not leave duplicate final archives or both editable and generated copies of the same artifact unless the user asks for both.
 

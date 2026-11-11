@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.0.1 - 2026-11-11
+
+- Added Linux, Bash, and WSL entry points for installation, scaffolding, and report builds.
+- Added `install.sh`, shared shell helpers, and thin Bash wrappers around the canonical Python tool.
+- Documented `python3`, WSL `/mnt` paths, non-interactive profile installation, and shell-specific verification commands.
+- Enforced LF line endings for shell scripts through `.gitattributes`.
+
+## 2.0.0 - 2026-11-11
+
+- Consolidated DOCX and PDF delivery into one `lab-report` skill.
+- Added a shared `report.md` source and `report.json` metadata contract.
+- Added a reusable python-docx builder with the NUIST A4 cover, A4 body geometry, tables, figures, code, equations, and accessibility metadata.
+- Added Office and native LaTeX PDF backends from the same report source.
+- Added `report_tool.py` for scaffold creation, final builds, and dependency checks.
+- Moved report generation logic out of consuming projects and removed intermediate artifacts from final report trees.
+- Established that the NUIST cover and report contract override generic `documents` skill styling.
+
 ## 1.2.0 - 2026-11-10
 
 - Refocused the skill on the shared LaTeX cover and a flexible body outline.

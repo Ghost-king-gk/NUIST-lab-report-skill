@@ -112,7 +112,12 @@ if (-not [string]::IsNullOrWhiteSpace($SealFile)) {
     $sealSource = [System.IO.Path]::GetFullPath($SealFile)
 }
 
-$exclude = @('.git', '.github', 'build', 'reports', 'tmp', 'docs', 'AGENTS.md', 'personal-profile.json', 'profile.example.json', 'install.ps1')
+$exclude = @(
+    '.git', '.github', '.gitattributes', '.gitignore',
+    'build', 'reports', 'output', 'tmp', 'docs', 'AGENTS.md', 'CHANGELOG.md',
+    'personal-profile.json', 'profile.example.json', 'install.ps1', 'install.sh',
+    '__pycache__'
+)
 
 function Copy-PersonalAsset([string]$source, [string]$prefix, [string]$fallback, [string]$assetDir) {
     if ([string]::IsNullOrWhiteSpace($source)) { return $fallback }
@@ -141,6 +146,11 @@ foreach ($targetDefinition in $targets) {
             Copy-Item -LiteralPath $item.FullName -Destination $destination -Force
         }
     }
+    Get-ChildItem -LiteralPath $target -Directory -Recurse -Force |
+        Where-Object { $_.Name -eq '__pycache__' } |
+        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    Get-ChildItem -LiteralPath $target -File -Recurse -Force -Filter '*.pyc' |
+        Remove-Item -Force -ErrorAction SilentlyContinue
 
     $assetDir = Join-Path $target 'assets\latex\lab-report\assets'
     New-Item -ItemType Directory -Force -Path $assetDir | Out-Null

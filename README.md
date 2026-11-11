@@ -4,20 +4,19 @@
   <a href="#english">English</a> ·
   <a href="#zh-cn">简体中文</a> ·
   <a href="HARNESSES.md">Harness paths</a> ·
-  <a href="#installation">Install</a> ·
-  <a href="#privacy">Privacy</a>
+  <a href="#installation">Install</a>
 </p>
 
 <p align="center">
   <img alt="Agent Skills" src="https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f">
-  <img alt="LaTeX" src="https://img.shields.io/badge/output-LaTeX%20%2B%20PDF-008080">
+  <img alt="DOCX and PDF" src="https://img.shields.io/badge/output-DOCX%20%2B%20PDF-1f4e79">
   <img alt="Harnesses" src="https://img.shields.io/badge/harnesses-9-6f42c1">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
 </p>
 
-A portable Agent Skill for producing LaTeX laboratory reports with a polished NUIST cover, a flexible body outline, optional task-specific data charts, and room for user-supplied visual ideas. It supports Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy.
+A portable Agent Skill for producing university laboratory reports with a fixed NUIST A4 cover, a flexible experiment structure, optional figures, and an editable DOCX. PDF is generated from the same report source when required.
 
-面向高校实验报告的可移植 Agent Skill：提供统一的 NUIST LaTeX 封面、灵活的正文大纲、按任务生成的数据图，以及容纳用户自定义图片和排版想法的接口。
+面向高校实验报告的可移植 Agent Skill：固定 NUIST A4 封面与报告版式，灵活组织实验内容、结果表和可选图片，默认输出可编辑 DOCX，并从同一内容源生成 PDF。
 
 ![Laboratory report cover preview](docs/preview-cover.png)
 
@@ -27,64 +26,119 @@ A portable Agent Skill for producing LaTeX laboratory reports with a polished NU
 
 ## English
 
-### What this repository provides
+### Why one skill
 
-The skill keeps two elements stable: the LaTeX cover and the report structure. Course content, section emphasis, chart choices, and image composition remain editable. The template ships no course-specific project and imposes no fixed image count or visual sequence.
+DOCX and PDF belong in one `lab-report` skill. Both outputs share the same cover metadata, A4 geometry, section hierarchy, evidence rules, tables, figures, captions, and report content. Two separate skills would duplicate those rules and allow the Word and PDF versions to diverge.
+
+The skill separates the format into build modes:
+
+- `docx`: editable and layout-authoritative deliverable;
+- `pdf`: review or submission copy generated from the same `report.md`;
+- `docx,pdf`: both deliverables.
+
+### Shared-source workflow
+
+```text
+reports/<report>/
+|-- README.md
+|-- report.json       cover metadata and output settings
+|-- report.md         single report content source
+|-- figures/          optional report images
+`-- output/           final DOCX and PDF
+```
+
+The consuming project does not receive the report builder, compiler wrapper, extracted slides, page renders, caches, or failed build artifacts. Those stay in the skill or a disposable build location.
+
+### Components
 
 | Component | Purpose |
 |---|---|
-| `SKILL.md` | Harness-neutral instructions for report generation |
-| `assets/latex/lab-report/labreport.sty` | Cover, headers, typography, tables, code listings, and figure wrapper |
-| `assets/latex/lab-report/main-template.tex` | Cover metadata and flexible body outline |
-| `scripts/new-lab-report.ps1` | Creates a report directory and local compiler wrapper |
-| `scripts/compile-report.ps1` | Compiles, validates, and renders the PDF |
-| `references/report-contract.md` | Default outline, optional figure policy, and final checks |
-| `install.ps1` | Installs a personalized copy for one or more harnesses |
-| `HARNESSES.md` | Lists user-level and project-level discovery paths |
-
-### Default report outline
-
-The starter document uses this sequence:
-
-1. Abstract
-2. Task and Objectives
-3. Background and Principles
-4. Method and Implementation
-5. Results and Data Analysis
-6. Discussion
-7. Conclusion
-8. Optional appendix and references
-
-Sections can be merged, removed, reordered, or replaced when the task or user requests a different argument structure.
-
-### Data figures and user images
-
-Figures are optional. If the supplied data support a useful comparison, trend, distribution, residual pattern, sensitivity result, or uncertainty display, the agent can generate a task-specific chart and place it under `figures/`.
-
-Users choose whether images appear, how many to include, and how they are composed. Custom diagrams, photographs, screenshots, rendered simulations, and plots are accepted through the default figure wrapper:
-
-```tex
-\LabFigure[0.85]{figure-file.png}{Caption text.}{fig:result}
-```
-
-Standard LaTeX `figure` and `\includegraphics` commands remain available for custom layouts.
-
-### Harness support
-
-The skill targets Codex, Claude Code, OpenCode, Hermes, Pi, Oh My Pi, DSH, ZCode, and WorkBuddy. Native installation paths and project-level alternatives are listed in [HARNESSES.md](HARNESSES.md).
+| `SKILL.md` | Portable report workflow and format decision |
+| `scripts/report_tool.py` | Scaffold, DOCX build, PDF export, and dependency check |
+| `scripts/lab_report_docx.py` | Shared cover and Markdown-to-DOCX renderer |
+| `scripts/new-lab-report.sh` / `compile-report.sh` | Bash entry points for Linux and WSL |
+| `scripts/new-lab-report.ps1` / `compile-report.ps1` | PowerShell entry points for Windows |
+| `references/report-source.md` | Supported Markdown syntax |
+| `references/docx-format.md` | DOCX layout and acceptance checks |
+| `references/pdf-export.md` | Office and LaTeX PDF backends |
+| `references/report-contract.md` | Evidence structure and final checks |
+| `assets/latex/lab-report/` | Shared cover, LaTeX style, and native PDF wrapper |
 
 ### Requirements
 
-- A harness that supports Agent Skills or a compatible `SKILL.md` directory
-- TeX Live with `latexmk`, `pdflatex`, `pdftoppm`, and `pdfinfo`
-- PowerShell 7 or Windows PowerShell
+- Python 3.10 or newer
+- Bash 4 or newer for Linux and WSL entry points
+- `python-docx` for DOCX generation
+- Optional PDF backend:
+  - LibreOffice for DOCX-to-PDF export;
+  - or Pandoc plus TeX Live for native LaTeX PDF.
+- `pdfinfo` and `pdftoppm` for final PDF verification when available
 
 ```powershell
-latexmk -v
-pdflatex -v
-pdftoppm -v
-pdfinfo -v
+python <skill-root>/scripts/report_tool.py doctor
 ```
+
+### Linux and WSL
+
+Use `python3` and the Bash entry points in Linux or WSL. Install `python-docx` in the active Python environment:
+
+```bash
+python3 -m pip install --user python-docx
+python3 <skill-root>/scripts/report_tool.py doctor
+```
+
+On Debian or Ubuntu, install `python3-pip` and `python3-venv` first when those modules are missing:
+
+```bash
+sudo apt install python3-pip python3-venv
+```
+
+If the system Python is externally managed, use a temporary virtual environment:
+
+```bash
+python3 -m venv .venv-lab-report
+. .venv-lab-report/bin/activate
+python -m pip install python-docx
+```
+
+The Bash installer uses the same harness paths as the PowerShell installer:
+
+```bash
+bash install.sh --harness codex
+bash install.sh --harness codex,claude-code,opencode
+bash install.sh --harness all --dry-run
+bash install.sh --harness all
+```
+
+For a non-interactive WSL installation, pass the profile fields explicitly. Windows drive paths are translated by `wslpath`:
+
+```bash
+bash install.sh \
+  --harness codex \
+  --student-name "Sample Student" \
+  --student-id 000000000000 \
+  --major "Sample Major" \
+  --college "Sample College"
+```
+
+Create and build with the same commands:
+
+```bash
+bash <skill-root>/scripts/new-lab-report.sh \
+  --project-root . \
+  --course "Course Name" \
+  --lab-number "1" \
+  --title "Report Title" \
+  --format both
+
+bash <skill-root>/scripts/compile-report.sh \
+  --report-dir ./reports/<report> \
+  --formats docx,pdf
+```
+
+The wrappers use `python3` by default. Set `PYTHON=python` when the active interpreter has a different executable name.
+
+WSL projects stored under `/mnt/<drive>/...` work in place. Keep the skill and report directories on the Linux filesystem when possible; use `/mnt/...` only when the project must remain on the Windows drive.
 
 ### Installation
 
@@ -96,94 +150,63 @@ Set-Location NUIST-lab-report-skill
 .\install.ps1
 ```
 
-The installer asks for one or more harness targets, then stores the student name, student ID, major, college, and optional custom branding in the local skill directory.
+The installer writes the student profile and optional branding into the selected local skill directories. The shared repository contains no personal profile.
 
 ```powershell
 .\install.ps1 -Harness codex
 .\install.ps1 -Harness codex,claude-code,opencode
-.\install.ps1 -Harness all
 .\install.ps1 -Harness all -DryRun
 ```
 
-Use `-TargetPath` for another compatible skill root. Existing targets require `-Force`; the installer creates a timestamped backup before replacement.
+Linux and WSL use the equivalent Bash installer:
+
+```bash
+bash install.sh --harness codex
+bash install.sh --harness all --dry-run
+```
 
 ### Create a report
 
 ```powershell
-.\scripts\new-lab-report.ps1 `
-  -ProjectRoot (Get-Location).Path `
-  -Course "Course Name" `
-  -LabNumber "1" `
-  -Title "Report Title"
+python .\scripts\report_tool.py new `
+  --project-root . `
+  --course "Course Name" `
+  --lab-number "1" `
+  --title "Report Title" `
+  --format both
 ```
 
-The script loads the installed personal profile and creates:
+The scaffold loads the installed personal profile for student name, ID, major, and college.
 
-```text
-reports/<lab-name>/
-|-- main.tex
-|-- figures/
-|-- build/
-|-- compile-report.ps1
-|-- report.config.json
-`-- README.md
-```
-
-`figures/` can remain empty. The shared LaTeX style stays in the user-level skill and is loaded through the generated compiler wrapper.
-
-### Build and verify
+### Build
 
 ```powershell
-.\compile-report.ps1 -AllowPending
-.\compile-report.ps1
+python <skill-root>/scripts/report_tool.py build `
+  --report-dir .\reports\<report> `
+  --formats docx,pdf
 ```
 
-`-AllowPending` supports scaffold previews. Final mode rejects unresolved `\LabPending{...}` markers, missing images referenced through `\LabFigure`, LaTeX errors, and Overfull or Underfull layout boxes. The compiler renders every PDF page to `build/pages/` and reports the page count.
+Linux and WSL can call the Bash wrapper:
 
-### Privacy
-
-<a id="privacy"></a>
-
-The shared repository contains the institutional NUIST wordmark and seal. Student fields and custom branding are written only to the installing user's local skill:
-
-```text
-<installed-skill-root>/personal-profile.json
+```bash
+bash <skill-root>/scripts/compile-report.sh \
+  --report-dir ./reports/<report> \
+  --formats docx,pdf
 ```
 
-The shared repository contains no student name, student ID, personal contact information, local absolute paths, or personal branding files.
+PDF backends:
 
-### Repository map
-
-```text
-NUIST-lab-report-skill/
-|-- SKILL.md
-|-- HARNESSES.md
-|-- install.ps1
-|-- profile.example.json
-|-- README.md
-|-- LICENSE
-|-- CHANGELOG.md
-|-- agents/
-|   `-- openai.yaml
-|-- assets/
-|   `-- latex/
-|       `-- lab-report/
-|           |-- labreport.sty
-|           |-- main-template.tex
-|           |-- README.md
-|           `-- assets/
-|-- docs/
-|   `-- preview-cover.png
-|-- references/
-|   `-- report-contract.md
-`-- scripts/
-    |-- new-lab-report.ps1
-    `-- compile-report.ps1
+```powershell
+--pdf-backend auto    # LibreOffice first, LaTeX fallback
+--pdf-backend office  # match the DOCX
+--pdf-backend latex   # native TeX PDF
 ```
 
-### License
+Final mode rejects unresolved `[PENDING: ...]` markers. Generated DOCX files include alternative text for images, repeating table headers, the standard A4 cover, and page numbering.
 
-MIT. See [LICENSE](LICENSE).
+### Authority rule
+
+When the generic `documents` skill is also available, it may be used for rendering, OOXML repair, comments, or accessibility checks. It must not replace the NUIST cover, A4 geometry, typography, or report structure defined here.
 
 ---
 
@@ -191,68 +214,119 @@ MIT. See [LICENSE](LICENSE).
 
 ## 简体中文
 
-### 仓库定位
+### 为什么合成一个 skill
 
-这个仓库面向高校实验报告，提供一套可移植的 LaTeX 报告工作流。固定部分是 NUIST 封面、封面字段和正文骨架；课程内容、章节侧重、数据图选择、图片数量和版式由具体任务与用户决定。
+DOCX 与 PDF 应保留在同一个 `lab-report` skill 中。两种输出共享封面元数据、A4 版式、章节层级、证据规则、表格、图片、图注和正文内容。拆成两个 skill 会重复维护这些约束，并使 Word 与 PDF 容易产生内容漂移。
 
-仓库不内置课程项目案例，不规定图片数量，也不要求固定的全部视觉顺序。Agent 负责把用户提供的任务、数据、图片和排版想法组织成可编译的 PDF 报告。
+输出模式分别为：
+
+- `docx`：默认可编辑交付，也是版式基准；
+- `pdf`：从同一份 `report.md` 生成；
+- `docx,pdf`：同时输出两种格式。
+
+### 单一内容源
+
+```text
+reports/<报告目录>/
+|-- README.md
+|-- report.json       封面元数据与输出设置
+|-- report.md         唯一报告正文源
+|-- figures/          可选图片
+`-- output/           最终 DOCX 与 PDF
+```
+
+实验项目不包含报告生成器、编译包装脚本、解压课件、逐页图片、缓存或失败构建文件。生成逻辑保留在本 skill 内，中间文件进入可清理的临时位置。
 
 ### 核心组件
 
 | 组件 | 作用 |
 |---|---|
-| `SKILL.md` | 与 harness 无关的报告生成指令 |
-| `assets/latex/lab-report/labreport.sty` | 封面、页眉、字体、表格、代码块和图片包装宏 |
-| `assets/latex/lab-report/main-template.tex` | 封面字段和可调整的正文大纲 |
-| `scripts/new-lab-report.ps1` | 创建报告目录与本地编译入口 |
-| `scripts/compile-report.ps1` | 编译、检查并逐页渲染 PDF |
-| `references/report-contract.md` | 默认大纲、可选图片策略和最终检查 |
-| `install.ps1` | 为一个或多个 harness 安装个性化副本 |
-| `HARNESSES.md` | 列出各 harness 的用户级与项目级路径 |
-
-### 默认正文大纲
-
-起始模板采用以下顺序：
-
-1. 摘要
-2. 任务与目标
-3. 背景与原理
-4. 方法与实现
-5. 结果与数据分析
-6. 讨论
-7. 结论
-8. 可选附录与参考文献
-
-具体任务允许合并、删减、重排或替换章节。用户给出的正文大纲优先于默认结构。
-
-### 数据图与用户自定义图片
-
-图片不是必需项。用户提供数据后，Agent 可以根据数据是否存在趋势、组间差异、分布特征、残差结构、敏感性或不确定性，决定是否生成任务相关的数据图，并把文件放入 `figures/`。
-
-图片数量、类型、构图和插入位置由用户决定。示意图、照片、截图、仿真渲染图和其他自绘图片都可以通过默认图片宏加入：
-
-```tex
-\LabFigure[0.85]{figure-file.png}{图片说明}{fig:result}
-```
-
-需要自定义排版时，可以直接使用标准 LaTeX `figure` 环境和 `\includegraphics`。技能会保留用户自己的图片组织和版式意图。
-
-### 支持的 Harness
-
-技能支持 Codex、Claude Code、OpenCode、Hermes、Pi、Oh My Pi、DSH、ZCode 和 WorkBuddy。各 harness 的原生安装路径与项目级替代路径见 [HARNESSES.md](HARNESSES.md)。
+| `SKILL.md` | 可移植报告流程与格式选择 |
+| `scripts/report_tool.py` | 创建项目、构建 DOCX/PDF、检查依赖 |
+| `scripts/lab_report_docx.py` | 统一封面与 Markdown-to-DOCX 渲染 |
+| `scripts/new-lab-report.sh` / `compile-report.sh` | Linux 与 WSL 的 Bash 入口 |
+| `scripts/new-lab-report.ps1` / `compile-report.ps1` | Windows 的 PowerShell 入口 |
+| `references/report-source.md` | Markdown 语法与图片、表格、公式约定 |
+| `references/docx-format.md` | DOCX 版式与验收 |
+| `references/pdf-export.md` | Office 与 LaTeX PDF 后端 |
+| `references/report-contract.md` | 证据结构与最终检查 |
+| `assets/latex/lab-report/` | 共享封面、LaTeX 样式和原生 PDF 包装模板 |
 
 ### 环境要求
 
-- 支持 Agent Skills 或兼容 `SKILL.md` 目录的 harness
-- 已安装 TeX Live，并包含 `latexmk`、`pdflatex`、`pdftoppm`、`pdfinfo`
-- PowerShell 7 或 Windows PowerShell
+- Python 3.10 或更高版本
+- Linux 与 WSL 入口需要 Bash 4 或更高版本
+- DOCX 生成需要 `python-docx`
+- PDF 后端任选其一：
+  - LibreOffice；或
+  - Pandoc 与 TeX Live
+- 建议安装 `pdfinfo`、`pdftoppm`，用于最终 PDF 检查
 
 ```powershell
-latexmk -v
-pdflatex -v
-pdftoppm -v
-pdfinfo -v
+python <skill-root>/scripts/report_tool.py doctor
 ```
+
+### Linux 与 WSL
+
+在 Linux 或 WSL 中使用 `python3` 和 Bash 入口。先为当前 Python 环境安装 `python-docx`：
+
+```bash
+python3 -m pip install --user python-docx
+python3 <skill-root>/scripts/report_tool.py doctor
+```
+
+Debian/Ubuntu 缺少 `pip` 或 `venv` 时先安装：
+
+```bash
+sudo apt install python3-pip python3-venv
+```
+
+如果系统 Python 启用了 externally managed 限制，使用临时虚拟环境：
+
+```bash
+python3 -m venv .venv-lab-report
+. .venv-lab-report/bin/activate
+python -m pip install python-docx
+```
+
+Bash 安装器使用与 PowerShell 安装器相同的 harness 路径：
+
+```bash
+bash install.sh --harness codex
+bash install.sh --harness codex,claude-code,opencode
+bash install.sh --harness all --dry-run
+bash install.sh --harness all
+```
+
+WSL 中可以直接传入个人资料，避免交互输入；Windows 路径会通过 `wslpath` 转换：
+
+```bash
+bash install.sh \
+  --harness codex \
+  --student-name "张三" \
+  --student-id 000000000000 \
+  --major "专业名称" \
+  --college "学院名称"
+```
+
+创建和构建命令如下：
+
+```bash
+bash <skill-root>/scripts/new-lab-report.sh \
+  --project-root . \
+  --course "课程名称" \
+  --lab-number "1" \
+  --title "报告题目" \
+  --format both
+
+bash <skill-root>/scripts/compile-report.sh \
+  --report-dir ./reports/<报告目录> \
+  --formats docx,pdf
+```
+
+包装器默认使用 `python3`。如果当前解释器名称不同，设置 `PYTHON=python`。
+
+位于 `/mnt/<盘符>/...` 的 WSL 项目可以原地使用。项目不需要迁移到 Linux 文件系统；如果构建速度或权限成为问题，再把项目复制到 `$HOME` 下的工作目录。
 
 ### 安装
 
@@ -262,90 +336,46 @@ Set-Location NUIST-lab-report-skill
 .\install.ps1
 ```
 
-安装器会询问目标 harness，并把姓名、学号、专业、学院和可选的自定义校徽写入本机 skill 目录。
+安装器会把学生资料和可选校徽写入本机目标 skill 目录，共享仓库不包含 `personal-profile.json`。
+
+Linux 和 WSL 使用 Bash 安装器：
+
+```bash
+bash install.sh --harness codex
+bash install.sh --harness all --dry-run
+bash install.sh --harness all
+```
+
+### 创建与构建
 
 ```powershell
-.\install.ps1 -Harness codex
-.\install.ps1 -Harness codex,claude-code,opencode
-.\install.ps1 -Harness all
-.\install.ps1 -Harness all -DryRun
+python .\scripts\report_tool.py new `
+  --project-root . `
+  --course "课程名称" `
+  --lab-number "1" `
+  --title "报告题目" `
+  --format both
 ```
-
-使用 `-TargetPath` 可以安装到其它兼容目录。目标已存在时必须配合 `-Force`，安装器会先创建带时间戳的备份。
-
-### 创建报告
 
 ```powershell
-.\scripts\new-lab-report.ps1 `
-  -ProjectRoot (Get-Location).Path `
-  -Course "课程名称" `
-  -LabNumber "1" `
-  -Title "报告题目"
+python <skill-root>/scripts/report_tool.py build `
+  --report-dir .\reports\<报告目录> `
+  --formats docx,pdf
 ```
 
-脚本会读取本机个人资料并生成：
+Linux 和 WSL 的等价命令：
 
-```text
-reports/<报告目录>/
-|-- main.tex
-|-- figures/
-|-- build/
-|-- compile-report.ps1
-|-- report.config.json
-`-- README.md
+```bash
+bash <skill-root>/scripts/compile-report.sh \
+  --report-dir ./reports/<报告目录> \
+  --formats docx,pdf
 ```
 
-`figures/` 可以为空。共享 LaTeX 样式保留在用户级 skill 中，由生成的编译入口加载，不复制到报告项目。
+正式构建会拒绝残留的 `[PENDING: ...]`。DOCX 默认包含 A4 封面、页码、图片替代文本、重复表头和统一标题层级。
 
-### 编译与验收
+### 版式优先级
 
-```powershell
-.\compile-report.ps1 -AllowPending
-.\compile-report.ps1
-```
-
-`-AllowPending` 用于生成未完成的脚手架预览。正式模式会拒绝残留的 `\LabPending{...}`、通过 `\LabFigure` 引用但不存在的图片、LaTeX 编译错误，以及 Overfull 或 Underfull 版面。编译完成后，每一页都会渲染到 `build/pages/`，并输出 PDF 页数。
-
-### 隐私与本地资料
-
-<a id="zh-privacy"></a>
-
-共享仓库保留 NUIST 校名艺术字和校徽。学生字段与自定义校徽只写入安装者本机的 skill 目录：
-
-```text
-<installed-skill-root>/personal-profile.json
-```
-
-共享仓库不包含学生姓名、学号、个人联系方式、本机绝对路径或个人校徽文件。
-
-### 目录结构
-
-```text
-NUIST-lab-report-skill/
-|-- SKILL.md
-|-- HARNESSES.md
-|-- install.ps1
-|-- profile.example.json
-|-- README.md
-|-- LICENSE
-|-- CHANGELOG.md
-|-- agents/
-|   `-- openai.yaml
-|-- assets/
-|   `-- latex/
-|       `-- lab-report/
-|           |-- labreport.sty
-|           |-- main-template.tex
-|           |-- README.md
-|           `-- assets/
-|-- docs/
-|   `-- preview-cover.png
-|-- references/
-|   `-- report-contract.md
-`-- scripts/
-    |-- new-lab-report.ps1
-    `-- compile-report.ps1
-```
+同时安装通用 `documents` skill 时，后者只能用于渲染、OOXML 修复、批注或无障碍检查，不能用其 Letter 纸张、通用封面或样式预设覆盖本 skill 的 NUIST 封面与报告结构。
 
 ### 许可证
 

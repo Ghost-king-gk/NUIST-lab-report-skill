@@ -1,50 +1,57 @@
-# Report outline and figure policy
+# Report Content and Evidence Contract
 
 ## Stable core
 
-The shared template provides two fixed elements: the LaTeX cover and a flexible body outline. Course-specific sections, project-specific content, image requirements, and a prescribed content sequence are not part of the template.
+The shared skill owns three stable elements:
+
+1. the NUIST A4 cover;
+2. the laboratory-report typography and heading hierarchy;
+3. the evidence and final-delivery discipline.
+
+The user or task controls section order, technical emphasis, figure selection, and optional appendix material.
 
 ## Default outline
 
-Adapt the order and depth to the task:
+Adapt this sequence to the actual assignment:
 
-1. Abstract: task, method, principal result, conclusion.
-2. Task and Objectives: question, requested deliverables, scope.
-3. Background and Principles: concepts and formulas needed to understand the method.
-4. Method and Implementation: apparatus, software, procedure, parameters, controls, and reproducibility details.
-5. Results and Data Analysis: measurements or generated results, followed by their interpretation.
-6. Discussion: mechanisms, boundary conditions, contradictions, and limitations.
-7. Conclusion: accepted result, uncertainty, and remaining question.
-8. Appendix and references: optional derivations, extended tables, code listings, and sources.
+1. Abstract: question, setup, principal measured result, conclusion.
+2. Introduction and scope: system boundary and claims under test.
+3. Experimental environment and method: apparatus or software, variables, controls, procedure, parameters, and reproducibility.
+4. Results: measurements before interpretation.
+5. Discussion: mechanism, boundary conditions, conflicts, and limitations.
+6. Conclusion: accepted result, uncertainty, and remaining discriminating test.
+7. References and optional appendix: evidence, derivations, extended tables, code, or trace material.
 
-Users may add, remove, merge, or reorder sections. A user-provided outline takes precedence over this default.
+A task-provided outline overrides the default.
 
-## Data figures
+## Evidence hierarchy
 
-Create a visualization when the available data make a relationship clearer than prose or a table. Useful targets include trends, comparisons, distributions, residuals, sensitivity, uncertainty, and parameter boundaries.
+Prefer:
 
-Use the user's data and preserve its scale, units, filtering, and provenance. Do not invent values, smooth over missing data, or imply a measurement that was not supplied. A table is preferable when exact values matter more than a visual pattern.
+1. raw traces, run logs, measurements, screenshots, datasets, and configuration exports;
+2. method records that establish the measurement conditions;
+3. author-written summaries;
+4. background material.
 
-Figures are optional. The template does not require a fixed number, type, or sequence of images.
+Never invent a missing measured value. If a required observation is unavailable and cannot be recovered in scope, use `[PENDING: ...]` during drafting and resolve it before final delivery.
 
-## User-supplied visuals
+## Results and figures
 
-Accept custom diagrams, photographs, screenshots, rendered simulations, plots, and other image assets. Users decide which images to include, how many to use, and where they belong. Preserve their intended composition when it remains readable in the final PDF.
+Use a table when several conditions share the same variables. Include units and the comparison basis in the heading or caption.
 
-Use `\LabFigure` for the standard figure wrapper:
+Generate a figure only when it adds a relationship that exact values do not expose quickly: trends, distributions, residuals, sensitivity, uncertainty, or mechanism.
 
-```tex
-\LabFigure[0.85]{figure-file.png}{Caption text.}{fig:label}
-```
+Preserve user-provided visuals. Do not impose a fixed count, sequence, or chart style.
 
-For a custom layout, use a standard `figure` environment and `\includegraphics` directly. Both approaches are supported.
+Every figure caption should state what was measured, under which condition, and what claim the visual supports.
 
 ## Final checks
 
-- The cover metadata matches the user's profile and report.
-- The body follows the task requirements and any user-defined outline.
-- No unintended `[PENDING:` markers remain.
+- Cover metadata matches the profile and task.
+- The body follows the task requirements and any user outline.
+- No `[PENDING: ...]` markers remain.
 - Every referenced image exists.
-- No overfull or underfull boxes appear in the log.
-- Every rendered page is visually inspected.
-- Reported results and conclusions match the supplied data.
+- Results and conclusions match supplied evidence.
+- DOCX and PDF use the same `report.md`.
+- No report-builder scripts or temporary render artifacts remain in the consuming project.
+- Final DOCX and PDF pages are visually inspected.

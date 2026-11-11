@@ -8,7 +8,13 @@ assets/latex/lab-report/assets/custom-*
 # Generated reports and TeX build products
 reports/
 build/
+output/
 tmp/
+.lab-report-*
+__pycache__/
+*.pyc
+*.docx
+*.pdf
 *.aux
 *.fdb_latexmk
 *.fls
